@@ -111,16 +111,16 @@ function love.update( dt )
 		gravity = gravity + .6
 	end
 
-	if(gKeyPressed.a) then
+	if(gKeyPressed.space) then
 		if(lvl1Solids[round(225 * (y + (marioHeight/32)) + x)] ~= 0
   		or (lvl1Solids[(225 * (y + (marioHeight/32)) + x) + 1] ~= 0 and direction == .5)
   		or (lvl1Solids[(225 * (y + (marioHeight/32)) + x) - 1] ~= 0 and direction == -.5)) then --gravity < 1 and lvl1Solids[(225 * (y + (marioHeight/32)) + x)] ~= 0) then
 			gravity = -9
-			gKeyPressed.a = nil
+			gKeyPressed.space = nil
 		end
 	end
 
-	if (marioRealY/16 < 20) then
+	if (marioRealY < 20*16) then
 		marioRealY = marioRealY + gravity
 	else
 		gravity = 0
@@ -137,7 +137,7 @@ function love.draw()
 	if (gKeyPressed.d) then
 		love.graphics.print("FPS:"..love.timer.getFPS(), 0, 0)
 		love.graphics.print("X:"..(gCamX/8) .. " Y: "..gCamY, 0, 15)
-		love.graphics.print("Mario X:"..marioRealX.." Mario Y:"..marioRealY/16, 0, 30)
+		love.graphics.print("Mario X:"..marioRealX.." Mario Y:"..marioRealY, 0, 30)
 		love.graphics.print("Current Quad:"..math.ceil(currentQuad), 0, 45)
 		love.graphics.print("Gravity:"..gravity, 0, 60)
 	end
