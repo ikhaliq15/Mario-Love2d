@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="225" height="16" tilewidth="16" tileheight="16" nextobjectid="1">
+ <tileset firstgid="1" name="1-1" tilewidth="16" tileheight="16" tilecount="6720">
+  <image source="../../Mario/game/gfx/1-1.png" width="3584" height="480"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="225" height="16">
+  <data encoding="base64" compression="zlib">
+   eJztlU1OwzAUhA3dEJc7cBbWwFE4BEgIQVvaK/CzKSA2XbGFK3AgbCErD/Oa2PjVtpIZ6ZP649hjayZWCoKgkrpvlPo4AACUAh0EgOd6P8860h1cG9/PhpcE/26O1HnG6B/I4JRjrb4O0kyG9PVmotStYTbh///aa/O5LaNujq55Yojp1XvPurRfufyDMtTSQdopiTuT5jNXRvveC7X7B7KE3nG1dBCAIUEVMjaHJ3QQjAVfIeNz+EIHwRjgFPKM/9usaZHyFtNB9HXc0EzG3BF+5nPdL/76Eh18NZxMlXoT9Od69RkxtlZC9lAzNfvnesRl1N8Dl/nQDkj6Dukg551+t3ffnCB1F9pePRgutVJPCXOWzo/dw2Pz/z2U9n+h0/zvcg9dPaK/2T3YHF3pv2P6nt2F/z75+aHe3fN0jL3/Tg3n+uezRcK7O7eNDuvh3IxZGO4MS8NKt/mh/v3xK+a/GNw8S2Yut/4mIMdungXxFeP/KNE/dxYx/iX2kJJjt6YvP0ddmfe1C/8h2tYB+g7hOng2bTvovPv9jfEO8ZI4H5zzb+EseB0fAh8rmpfUOVLmGQoSZzpUIAgqq2/nMSn8
+  </data>
+ </layer>
+ <layer name="Solid" width="225" height="16">
+  <data encoding="base64" compression="zlib">
+   eJzt1dEKgjAUgGHBi6B6qV5G3/8NIiIYa665hrr6Phh4kTIO56dhAAAA4CimcRjmce9bwH+bz3vfAH7T6fI8n2gQ2nv1p0HYXtifBmFbcX8apEfh3pbscPjb2ndbSPWnQXqT6qhkj1M7X/puC0v9aZCe5DrK7fLSzq/p4Bu5/jRIL0o6Su1zbufXttDi3jUNbvVffbs68ZmC2T+ea79jzul57H2Pox3exQ3WiGf777OOGwQ4ijsueE6O
+  </data>
+ </layer>
+</map>
