@@ -38,7 +38,6 @@ function love.load()
 	currentDirection = marioWalk
 	currentQuad = 1
 	direction = .5
-	offScreen = false
 	s = 2
 	marioRealX, marioRealY = 40 , (love.graphics.getHeight()/2)-64
 
