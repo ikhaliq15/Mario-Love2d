@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="example" tilewidth="32" tileheight="32" tilecount="4">
+  <image source="exampletiles.png" width="128" height="32"/>
+ </tileset>
+ <layer name="Solid" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzt18EKACAIA1Dt/z+6uxfBdM5w4KnDQ1hQKiLaPF1Zn8M/Zmyqzln2Z/O9+/l67vmosPjb/7/87T/W9/pf7Ucz1c96v03dH+1H+53lV4XVR/1PWPdfH+t3zgUR4ADl
+  </data>
+ </layer>
+ <layer name="Foreground" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJzt1MEJADAMAsBA99+5GyRIH+njbgJRsApmZzsAEXvlus70CfzAFwHw6gKySAAQ
+  </data>
+ </layer>
+</map>
