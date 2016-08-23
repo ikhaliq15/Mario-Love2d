@@ -8,7 +8,7 @@ function love.load()
 		)*32)-32 -- tiles boundaryy
 	tilesMin = 0;
 	tileD = 32;
-	bottomWidth = (((tileSet:getHeight()/32) * tileSet:getWidth()) %love.graphics.getWidth());  
+	bottomWidth = (((tileSet:getHeight()/32) * tileSet:getWidth()) %love.graphics.getWidth()); --how many extra tiles at the bottom 
 	boxWidth = 0;
 	if(tileSet:getWidth()*(tileSet:getHeight()/32) % love.graphics.getWidth() == tileSet:getWidth()) then
 		boxWidth = tileSet:getWidth();
