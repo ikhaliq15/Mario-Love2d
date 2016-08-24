@@ -230,7 +230,6 @@ function love.draw()
 		camera:set()
 		
 		love.graphics.setColor( 0, 0, 0 )
-		--love.graphics.rectangle("fill", player.x - player.w/2, player.y - player.h/2, player.w, player.h)
 		
 		love.graphics.setColor( 255, 255, 255 )
 		map:draw()
@@ -262,7 +261,6 @@ function love.update(dt)
 	
 		camera:setPosition( player.x - (love.graphics.getWidth()/2), (love.graphics.getHeight()/2))
 	end
-	print (love.timer.getFPS( ))
 end
 
 function love.keyreleased(key)
