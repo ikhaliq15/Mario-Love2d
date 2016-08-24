@@ -1,7 +1,26 @@
 local AdvTiledLoader = require("AdvTiledLoader.Loader")
 require("camera")
 
+state = "play"
+leftDpadDown = false
+rightDpadDown = false
+aButtonDown = false
+
 function love.load()
+	love.filesystem.setIdentity("Cmap_presets")
+	local open = love.joystick.getJoystickCount( );
+	love.graphics.setBackgroundColor(255,255,255);
+	lastbutton = "none";
+	osType = love.system.getOS( );
+ 	guidName = "nil";
+ 	right = 0;
+ 	left = 0;
+ 	buttons = 0;
+ 	inputindex = 0;
+ 	inputtype = "";
+ 	hatdirection = 0;
+
+
 	hamster = love.graphics.newImage("gfx/mario.png")
 	love.graphics.setBackgroundColor( 220, 220, 255 )
 	AdvTiledLoader.path = "maps/"
@@ -136,41 +155,114 @@ function love.load()
 		end
 		return tempState
 	end
+	open = love.joystick.getJoystickCount( );
+	x,y = love.mouse.getPosition();
+	if open > 0 then
+		if osType == "OS X" then
+			joysticks = love.joystick.getJoysticks() --[[ A TABLE of all the joystick inputs--]]
+			Joystick = joysticks[1] --Joystick equals first joystick input
+			name = Joystick:getName()
+			guid = Joystick:getGUID( )
+			guidName = tostring(guid)
+			axis = Joystick:getAxisCount( )
+			isgamepad = Joystick:isGamepad(Joystick)
+			inputtype, inputindex, hatdirection = Joystick:getGamepadMapping("start")			-- success = Joystick:setVibration( 100, 100 )
+	
+			joysticks = love.joystick.getJoysticks() --[[ A TABLE of all the joystick inputs--]]
+			Joystick = joysticks[1] --Joystick equals first joystick input
+			name = Joystick:getName()
+			guid = Joystick:getGUID( )
+			love.joystick.setGamepadMapping(guid, "x", "button", 3, nil)
+			love.joystick.setGamepadMapping(guid, "a", "button", 1, nil)
+			love.joystick.setGamepadMapping(guid, "b", "button", 2, nil)
+			love.joystick.setGamepadMapping(guid, "y", "button", 4, nil)
+			love.joystick.setGamepadMapping( guid, "leftshoulder", "button", 5, nil)
+			love.joystick.setGamepadMapping( guid, "rightshoulder", "button", 6, nil)
+			love.joystick.setGamepadMapping( guid, "back", "button", 10, nil)
+			love.joystick.setGamepadMapping( guid, "back", "button", 10, nil)
+			love.joystick.setGamepadMapping( guid, "start", "button", 9, nil)
+			-- love.joystick.setGamepadMapping( guid, "dpup", "axis", 2, 0.1)
+			love.joystick.setGamepadMapping( guid, "dpup", "button", 12, nil)
+			love.joystick.setGamepadMapping( guid, "dpdown", "button", 13, nil)
+			love.joystick.setGamepadMapping( guid, "dpleft", "button", 14, nil)
+			love.joystick.setGamepadMapping( guid, "dpright", "button", 15,  nil)
+			love.joystick.saveGamepadMappings("gigaware.txt")
+		end
+	end
+end
+
+function love.gamepadpressed(joystick, button)
+	anyDown = Joystick:isGamepadDown("dpleft")
+
+	if button == "dpleft" then
+		leftDpadDown = true
+	end
+
+	if button == "a" then 
+		aButtonDown = true
+	end
+	
+	if button == "dpright" then
+		rightDpadDown = true
+	end
+	print(button)
+    lastbutton = button
+end
+
+function love.gamepadreleased( joystick, button )
+	if button == "dpleft" then
+		leftDpadDown = false
+		player.x_vel = 0
+	end
+	if button == "dpright" then
+		rightDpadDown = false
+		player.x_vel = 0
+	end
+	if button == "a" then
+		aButtonDown = false
+	end
 end
 
 function love.draw()
 
-	camera:set()
-	
-	love.graphics.setColor( 0, 0, 0 )
-	--love.graphics.rectangle("fill", player.x - player.w/2, player.y - player.h/2, player.w, player.h)
-	
-	love.graphics.setColor( 255, 255, 255 )
-	map:draw()
-	
+	if state == "play" then
 
-	love.graphics.draw(hamster, player.x - player.w/2, player.y - player.h/2)
+		camera:set()
+		
+		love.graphics.setColor( 0, 0, 0 )
+		--love.graphics.rectangle("fill", player.x - player.w/2, player.y - player.h/2, player.w, player.h)
+		
+		love.graphics.setColor( 255, 255, 255 )
+		map:draw()
+		
 
-	camera:unset()
+		love.graphics.draw(hamster, player.x - player.w/2, player.y - player.h/2)
+
+		camera:unset()
+	end
 end
 
 function love.update(dt)
-	if dt > 0.05 then
-		dt = 0.05
-	end
-	if love.keyboard.isDown("d") then
-		player:right()
-	end
-	if love.keyboard.isDown("a") then
-		player:left()
-	end
-	if love.keyboard.isDown("space") and not(hasJumped) then
-		player:jump()
-	end
+
+	if state == "play" then
+		if dt > 0.05 then
+			dt = 0.05
+		end
+		if love.keyboard.isDown("d") or rightDpadDown then
+			player:right()
+		end
+		if love.keyboard.isDown("a") or leftDpadDown then
+			player:left()
+		end
+		if (love.keyboard.isDown("space") or aButtonDown) and not(hasJumped) then
+			player:jump()
+		end
+
+		player:update(dt)
 	
-	player:update(dt)
-	
-	camera:setPosition( player.x - (love.graphics.getWidth()/2), (love.graphics.getHeight()/2))
+		camera:setPosition( player.x - (love.graphics.getWidth()/2), (love.graphics.getHeight()/2))
+	end
+	print (love.timer.getFPS( ))
 end
 
 function love.keyreleased(key)
