@@ -1,3 +1,4 @@
+require "dll/tileEditor"
 function loadMenu()
 	-- Load all the menu stuff.
  	logo = love.graphics.newImage("gfx/THEINTERWEB.png");
@@ -23,7 +24,8 @@ function updateMenu()
 			love.graphics.setBackgroundColor(255,255,255);
 			if selectPos == 2 then
 				state = "create"
-				success = love.window.setMode(800, 608)
+				success = love.window.setMode(512, 608)
+				loadTileEditor();
 			end
 		end
 	end
