@@ -1,7 +1,19 @@
+ssPosition = 1
+timer = 1
+
 function loadPlayer()
 	-- All the player methods.
 
-	hamster = love.graphics.newImage("gfx/mario.png")
+	hamster = love.graphics.newImage("gfx/Mario/mario.png")
+
+	right_ss = love.graphics.newImage("gfx/playable_right.png")
+
+	right_walk = {
+					love.graphics.newQuad(32, 0, 32, 64, right_ss:getDimensions()),
+					love.graphics.newQuad(64, 0, 32, 64, right_ss:getDimensions()),
+					love.graphics.newQuad(96, 0, 32, 64, right_ss:getDimensions()),
+					love.graphics.newQuad( 0, 0, 32, 64, right_ss:getDimensions())
+				}
 
 	player = 	{
 			x = 256,
@@ -17,7 +29,7 @@ function loadPlayer()
 			standing = false,
 			}
 
-	function player:jump()
+	function player:jump() 
 		if self.standing then
 			self.y_vel = self.jump_vel
 			self.standing = false
@@ -26,14 +38,29 @@ function loadPlayer()
 	
 	function player:right()
 		self.x_vel = self.speed
+		if timer > .05 then
+			ssPosition = ssPosition + 1
+			timer = 0
+		end
+		if ssPosition >= 4 then
+			ssPosition = 1
+		end
 	end
 	
 	function player:left()
 		self.x_vel = -1 * (self.speed)
+		if timer > .05 then
+			ssPosition = ssPosition + 1
+			timer = 0
+		end
+		if ssPosition >= 4 then
+			ssPosition = 1
+		end
 	end
-	
+
 	function player:stop()
 		self.x_vel = 0
+		ssPosition = 4
 	end
 	
 	function player:collide(event)
@@ -84,6 +111,7 @@ function loadPlayer()
 				self.x = nextX
 			else
 				self.x = nextX - ((nextX + halfX) % map.tileWidth)
+				ssPosition = 4
 			end
 		elseif self.x_vel < 0 then
 			if not(self:isColliding(map, nextX - halfX, self.y - halfY))
@@ -91,6 +119,7 @@ function loadPlayer()
 				self.x = nextX
 			else
 				self.x = nextX + map.tileWidth - ((nextX - halfX) % map.tileWidth)
+				ssPosition = 4
 			end
 		end
 		
@@ -136,6 +165,10 @@ function updatePlay(dt)
 	if dt > 0.05 then
 		dt = 0.05
 	end
+	if player.x_vel == 0 then
+		ssPosition = 4
+	end
+	timer = timer + math.floor((love.timer.getDelta() * love.timer.getFPS()) * 100) / 10000
 	if love.keyboard.isDown("d") or rightDpadDown then
 		player:right()
 	end
@@ -156,6 +189,7 @@ function drawPlay()
 	love.graphics.setColor( 0, 0, 0 )
 	love.graphics.setColor( 255, 255, 255 )
 	map:draw()
-	love.graphics.draw(hamster, player.x - player.w/2, player.y - player.h/2)
+	--love.graphics.draw(hamster, player.x - player.w/2, player.y - player.h/2)
+	love.graphics.draw(right_ss, right_walk[ssPosition], player.x - player.w/2, player.y - player.h/2)
 	camera:unset()
 end

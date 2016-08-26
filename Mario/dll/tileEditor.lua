@@ -63,7 +63,6 @@ function isTileItemColliding()
 end 
 
 function drawTileEditor()
-	print (tilesY)
 	love.graphics.setColor(0,0,0);
 	-----MAP GRID
 	for i = 0, math.floor(love.graphics.getHeight()/32), 1 do

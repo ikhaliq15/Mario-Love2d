@@ -76,7 +76,6 @@ function love.gamepadpressed(joystick, button)
 		camera:unset()
 	end
 
-	print(button)
     lastbutton = button
 
     if state == "play" then
