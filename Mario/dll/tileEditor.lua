@@ -1,14 +1,25 @@
-function love.load()
-	require "boundary"
-	love.graphics.setBackgroundColor(255,255,255);
-	tileSet = love.graphics.newImage("spriteBatch.png");
-	tileQuads = {};
+	require ("../libs/boundary")
+
+tileSet = love.graphics.newImage("spriteBatch.png");
+tilesY = 0
+
+function updateSize()
+	bottomWidth = (((tileSet:getHeight()/32) * tileSet:getWidth()) %love.graphics.getWidth());  
 	tilesX = 0; -- tiles boundaryx 
 	tilesY = (math.floor((love.graphics.getHeight() - (math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32))*32))/32
-		)*32)-32 -- tiles boundaryy
+		)*32) - math.ceil((bottomWidth) / (bottomWidth+1)) * 32 -- tiles boundaryy
+end
+
+function loadTileEditor()
+
+	love.graphics.setBackgroundColor(255,255,255);
+	tileQuads = {};
+	bottomWidth = (((tileSet:getHeight()/32) * tileSet:getWidth()) %love.graphics.getWidth());  
+	tilesX = 0; -- tiles boundaryx 
+	tilesY = (math.floor((love.graphics.getHeight() - (math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32))*32))/32
+		)*32) - math.ceil((bottomWidth) / (bottomWidth+1)) * 32 -- tiles boundaryy
 	tilesMin = 0;
 	tileD = 32;
-	bottomWidth = (((tileSet:getHeight()/32) * tileSet:getWidth()) %love.graphics.getWidth()); --how many extra tiles at the bottom 
 	boxWidth = 0;
 	if(tileSet:getWidth()*(tileSet:getHeight()/32) % love.graphics.getWidth() == tileSet:getWidth()) then
 		boxWidth = tileSet:getWidth();
@@ -19,9 +30,6 @@ function love.load()
 	tileMap = {};
 	tx = 0;
 	ty = 0;
-
-	print (love.graphics.getHeight())
-	print (love.graphics.getWidth())
 
 	for i = 0, math.floor(love.graphics.getHeight()/32), 1 do
 		tileMap[i] = {};
@@ -37,6 +45,7 @@ function love.load()
 	end
 	spriteBatch = love.graphics.newSpriteBatch(tileSet, love.graphics.getHeight() * love.graphics.getWidth());
 end
+
 function updateMap() 
 	spriteBatch:clear();
 	for i = 0, #tileMap, 1 do 
@@ -49,11 +58,12 @@ function updateMap()
 	spriteBatch:flush();
 end
 
-function love.update()
-	isTouching(tilesMin, tilesY, boxWidth, boxHeight, bottomWidth);
-end
+function isTileItemColliding()
+	return isTouching(tilesMin, tilesY, boxWidth, boxHeight, bottomWidth);
+end 
 
-function love.draw()
+function drawTileEditor()
+	print (tilesY)
 	love.graphics.setColor(0,0,0);
 	-----MAP GRID
 	for i = 0, math.floor(love.graphics.getHeight()/32), 1 do
