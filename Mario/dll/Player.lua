@@ -37,24 +37,21 @@ function loadPlayer()
 	end
 	
 	function player:right()
+							print(ssPosition)
+
 		self.x_vel = self.speed
 		if timer > .05 then
-			ssPosition = ssPosition + 1
+			ssPosition = ssPosition%3 + 1
 			timer = 0
-		end
-		if ssPosition >= 4 then
-			ssPosition = 1
 		end
 	end
 	
 	function player:left()
+
 		self.x_vel = -1 * (self.speed)
 		if timer > .05 then
-			ssPosition = ssPosition + 1
+			ssPosition = ssPosition%3 + 1
 			timer = 0
-		end
-		if ssPosition >= 4 then
-			ssPosition = 1
 		end
 	end
 
@@ -162,6 +159,7 @@ end
 
 
 function updatePlay(dt)
+
 	if dt > 0.05 then
 		dt = 0.05
 	end
