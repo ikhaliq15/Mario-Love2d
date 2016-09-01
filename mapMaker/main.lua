@@ -4,7 +4,7 @@ function love.load()
 	love.graphics.setBackgroundColor(255,255,255);
 	tileSet = love.graphics.newImage("spriteBatch.png");
 	layers = { 
-			{"Sky", 19, 15},
+			{"Sky", 19, 25},
 		}
 	love.filesystem.setIdentity("Converter")
 	ogImagePath = love.filesystem.getSourceBaseDirectory().."/resources/tileset.png"
@@ -47,11 +47,11 @@ function love.load()
 end
 function injectLayer(id, tbl, layerTbl, layerNum)
 	for i = 1, #tbl, 1 do
-		for j = 1, #tbl[i] do 
+		for j = 1, #tbl[i],1 do 
 			if tbl[i][j] == id then 
-				layerTbl[layerNum][j] = id
+				layerTbl[layerNum][j + #tbl*(i-1)] = id
 			else
-				layerTbl[layerNum][j] = 0
+				layerTbl[layerNum][j + #tbl*(i-1)] = 0
 			end
 		end
 	end
@@ -76,7 +76,13 @@ function love.update()
 		if key == "return" then
 			checkMapsFolder()
 			injectLayer(2, tileMap, layerMap, 1)
+			for i = 1, #layerMap[1], 1 do
+				if layerMapp[1][i] == 1 
+					print(layerMap[1][i])
+				end
+			end
 			newMap("test", layers, layerMap)
+			print(love.graphics.getHeight()/32 .. " " .. love.graphics.getWidth()/32)
 		end
 	end
 end

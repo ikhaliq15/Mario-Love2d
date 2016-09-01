@@ -106,7 +106,7 @@ function newMap(n, l, d)
 
 
 	success = love.filesystem.write( "custom_maps/"..n..".tmx", finalString)
-	succes2 = love.filesystem.write( "Converter"..n..".txt", finalString2)
+	succes2 = love.filesystem.write( "custom_maps/"..n..".txt", finalString2)
 
 end
 
