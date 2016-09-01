@@ -46,15 +46,24 @@
 end
 
 function injectLayer(id, tbl, layerTbl, layerNum)
-	for i = 1, #tbl, 1 do
-		for j = 1, #tbl[i],1 do 
-			if tbl[i-1][j-1] == id then 
-				layerTbl[layerNum][j + #tbl[i]*(i-1)] = id
-			elseif tbl[i-1][j-1] == nil then
-				print (j)
-			else
-				layerTbl[layerNum][j + #tbl[i]*(i-1)] = 0
-			end
+	for i = 0, #tbl, 1 do
+		for j = 0, #tbl[i],1 do 
+			-- if tbl[i-1][j-1] == id then 
+			-- 	layerTbl[layerNum][j + #tbl[i]*(i-1)] = id
+			-- elseif tbl[i-1][j-1] == nil then
+			-- 	print(j)
+			-- else
+			-- 	layerTbl[layerNum][j + #tbl[i]*(i-1)] = 0
+			-- end
+			print(j)
+			-- if tbl[i][j] == id then 
+			-- 	layerTbl[layerNum][j + #tbl[i]*(i)] = id
+			-- 	print(j)
+			-- elseif tbl[i-1][j-1] == nil then
+			-- 	print(j)
+			-- else
+			-- 	layerTbl[layerNum][j + #tbl[i]*(i)] = 0
+			-- end
 		end
 	end
 end
@@ -87,9 +96,9 @@ function love.update()
 		if key == "return" then
 			-- checkMapsFolder()
 			injectLayer(2, tileMap, layerMap, 1)
-			for i = 1, #layerMap[1], 1 do 
-				print (layerMap[1][i])
-			end
+			-- for i = 0, #layerMap[1], 1 do 
+			-- 	print (layerMap[1][i])
+			-- end
 			print(#layerMap[1]);
 			newMap("test", layers, layerMap)
 			-- print(love.graphics.getHeight()/32 .. " " .. love.graphics.getWidth()/32)
