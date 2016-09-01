@@ -4,11 +4,7 @@ function love.load()
 	love.graphics.setBackgroundColor(255,255,255);
 	tileSet = love.graphics.newImage("spriteBatch.png");
 	layers = { 
-			{"Sky", 215, 15},
-			{"Background", 215, 15},
-			{"Solid", 215, 15},
-			{"Flag", 215, 15},
-			{"Castle", 215, 15}
+			{"Sky", 19, 15},
 		}
 	love.filesystem.setIdentity("Converter")
 	ogImagePath = love.filesystem.getSourceBaseDirectory().."/resources/tileset.png"
@@ -28,6 +24,7 @@ function love.load()
 	end
 	boxHeight = math.ceil(((love.graphics.getHeight() - tilesY))/32)*32;
 	tileMap = {};
+	layerMap = {{}};
 	tx = 0;
 	ty = 0;
 
@@ -48,6 +45,18 @@ function love.load()
 	end
 	spriteBatch = love.graphics.newSpriteBatch(tileSet, love.graphics.getHeight() * love.graphics.getWidth());
 end
+function injectLayer(id, tbl, layerTbl, layerNum)
+	for i = 1, #tbl, 1 do
+		for j = 1, #tbl[i] do 
+			if tbl[i][j] == id then 
+				layerTbl[layerNum][j] = id
+			else
+				layerTbl[layerNum][j] = 0
+			end
+		end
+	end
+end
+
 function updateMap() 
 	spriteBatch:clear();
 	for i = 0, #tileMap, 1 do 
@@ -66,7 +75,8 @@ function love.update()
 
 		if key == "return" then
 			checkMapsFolder()
-			newMap("test", layers, tileMap)
+			injectLayer(2, tileMap, layerMap, 1)
+			newMap("test", layers, layerMap)
 		end
 	end
 end
