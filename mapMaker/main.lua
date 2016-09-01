@@ -1,10 +1,10 @@
-function love.load()
+ function love.load()
 	require "boundary"
 	require "test"
 	love.graphics.setBackgroundColor(255,255,255);
 	tileSet = love.graphics.newImage("spriteBatch.png");
 	layers = { 
-			{"Sky", 19, 25},
+			{"Sky", 25, 19},
 		}
 	love.filesystem.setIdentity("Converter")
 	ogImagePath = love.filesystem.getSourceBaseDirectory().."/resources/tileset.png"
@@ -28,16 +28,15 @@ function love.load()
 	tx = 0;
 	ty = 0;
 
-	print (love.graphics.getHeight())
-	print (love.graphics.getWidth())
-
+	print (love.graphics.getHeight()/32)
+	print (love.graphics.getWidth()/32)
 	for i = 0, math.floor(love.graphics.getHeight()/32), 1 do
 		tileMap[i] = {};
 		for j = 0, math.floor(love.graphics.getWidth()/32), 1 do
 			tileMap[i][j] = 0;
 		end
 	end
-	
+
 	for y = 0, (tileSet:getHeight()/32)-1, 1 do
 		for x = 0, (tileSet:getWidth()/32)-1, 1 do 
 			tileQuads[#tileQuads+1] = love.graphics.newQuad(x * 32, y * 32, 32, 32, tileSet:getWidth(), tileSet:getHeight());
@@ -45,16 +44,28 @@ function love.load()
 	end
 	spriteBatch = love.graphics.newSpriteBatch(tileSet, love.graphics.getHeight() * love.graphics.getWidth());
 end
+
 function injectLayer(id, tbl, layerTbl, layerNum)
 	for i = 1, #tbl, 1 do
 		for j = 1, #tbl[i],1 do 
-			if tbl[i][j] == id then 
-				layerTbl[layerNum][j + #tbl*(i-1)] = id
+			if tbl[i-1][j-1] == id then 
+				layerTbl[layerNum][j + #tbl[i]*(i-1)] = id
+			elseif tbl[i-1][j-1] == nil then
+				print (j)
 			else
-				layerTbl[layerNum][j + #tbl*(i-1)] = 0
+				layerTbl[layerNum][j + #tbl[i]*(i-1)] = 0
 			end
 		end
 	end
+end
+--need to read the file first you dont need to overlay any layers because when you make a map you never overlay a tile
+function mergeLayers(tbl, layerTbl)
+	for i = 1, #layerTbl, 1 do 
+		for j = 1, #layerTbl[i], 1 do
+			tblp[i][j] = layerTbl[i][j]
+		end
+	end
+
 end
 
 function updateMap() 
@@ -74,15 +85,15 @@ function love.update()
 	function love.keyreleased(key) 
 
 		if key == "return" then
-			checkMapsFolder()
+			-- checkMapsFolder()
 			injectLayer(2, tileMap, layerMap, 1)
-			for i = 1, #layerMap[1], 1 do
-				if layerMapp[1][i] == 1 
-					print(layerMap[1][i])
-				end
+			for i = 1, #layerMap[1], 1 do 
+				print (layerMap[1][i])
 			end
+			print(#layerMap[1]);
 			newMap("test", layers, layerMap)
-			print(love.graphics.getHeight()/32 .. " " .. love.graphics.getWidth()/32)
+			-- print(love.graphics.getHeight()/32 .. " " .. love.graphics.getWidth()/32)
+
 		end
 	end
 end
