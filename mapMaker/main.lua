@@ -30,6 +30,8 @@
 
 	print (love.graphics.getHeight()/32)
 	print (love.graphics.getWidth()/32)
+
+
 	for i = 0, math.floor(love.graphics.getHeight()/32), 1 do
 		tileMap[i] = {};
 		for j = 0, math.floor(love.graphics.getWidth()/32), 1 do
@@ -42,22 +44,25 @@
 			tileQuads[#tileQuads+1] = love.graphics.newQuad(x * 32, y * 32, 32, 32, tileSet:getWidth(), tileSet:getHeight());
 		end
 	end
+
 	spriteBatch = love.graphics.newSpriteBatch(tileSet, love.graphics.getHeight() * love.graphics.getWidth());
+
 end
 
 function injectLayer(id, tbl, layerTbl, layerNum)
-	for i = 1, #tbl, 1 do
-		for j = 1, #tbl[i],1 do 
-			if tbl[i-1][j-1] == id then 
-				layerTbl[layerNum][j + #tbl[i]*(i-1)] = id
-			elseif tbl[i-1][j-1] == nil then
+	for i = 0, #tbl-1, 1 do
+		for j = 0, #tbl[i]-1, 1 do 
+			if tbl[i][j] == id then 
+				layerTbl[layerNum][j + #tbl[i]*(i)] = id
+			elseif tbl[i][j] == nil then
 				print (j)
 			else
-				layerTbl[layerNum][j + #tbl[i]*(i-1)] = 0
+				layerTbl[layerNum][j + #tbl[i]*(i)] = 0
 			end
 		end
 	end 
 end
+
 --need to read the file first you dont need to overlay any layers because when you make a map you never overlay a tile
 function mergeLayers(tbl, layerTbl)
 	for i = 1, #layerTbl, 1 do 
@@ -83,13 +88,18 @@ end
 function love.update()
 	isTouching(tilesMin, tilesY, boxWidth, boxHeight, bottomWidth);
 	function love.keyreleased(key) 
-
 		if key == "return" then
 			-- checkMapsFolder()
+
 			injectLayer(2, tileMap, layerMap, 1)
-			for i = 1, #layerMap[1], 1 do 
+
+			for i = 0, #layerMap[1], 1 do 
+				if i % 25 == 0 then
+					print("\n")
+				end
 				print (layerMap[1][i])
 			end
+
 			print(#layerMap[1]);
 			newMap("test", layers, layerMap)
 			-- print(love.graphics.getHeight()/32 .. " " .. love.graphics.getWidth()/32)
@@ -114,10 +124,13 @@ function love.draw()
 	love.graphics.print("isTouching ".. tostring(isTouching(tilesMin, tilesY, boxWidth, boxHeight, bottomWidth)), 32);
 -- math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32))
 	love.graphics.setColor(255,255,255);
+	--MOD THIS SHIT SO IT ISNT ON ONE LAYER, LAYER 17 is where it all goes
 	for y = 0, math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32)), 1 do --clean up with modoulus
-		for i = 1, #tileQuads - y * love.graphics.getWidth()/32, 1 do
-			tilesX = ((i-1)*32);
-			tileMap[(tilesY+y*32)/32][tilesX/32] = i + (y*(love.graphics.getWidth()/32));
+		for i = 1, #tileQuads - y * (love.graphics.getWidth()/32), 1 do
+			if i <= 25 then
+				tilesX = ((i-1)*32);
+				tileMap[(tilesY+y*32)/32][tilesX/32] = i + (y*(love.graphics.getWidth()/32));
+			end
 		end
 	end
 	-- (y*(love.graphics.getWidth()/32));
