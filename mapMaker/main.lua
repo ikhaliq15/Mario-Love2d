@@ -64,13 +64,13 @@ function injectLayer(id, tbl, layerTbl, layerNum)
 end
 
 --need to read the file first you dont need to overlay any layers because when you make a map you never overlay a tile
+-- does not HAVE LAYERS YET
 function mergeLayers(tbl, layerTbl)
-	for i = 1, #layerTbl, 1 do 
-		for j = 1, #layerTbl[i], 1 do
-			tblp[i][j] = layerTbl[i][j]
+	for i = 0, #layerTbl-1, 1 do 
+		for j = 0, #layerTbl[i]-1, 1 do
+			tbl[i][j] = layerTbl[j + #tbl[i]*(i)]
 		end
 	end
-
 end
 
 function updateMap() 

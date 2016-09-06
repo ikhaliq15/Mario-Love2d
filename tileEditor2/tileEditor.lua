@@ -1,4 +1,4 @@
-	require ("../libs/boundary")
+	require ("boundary")
 
 tileSet = love.graphics.newImage("spriteBatch.png");
 tilesY = 0
@@ -18,7 +18,6 @@ function loadTileEditor()
 	tilesX = 0; -- tiles boundaryx 
 	tilesY = (math.floor((love.graphics.getHeight() - (math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32))*32))/32
 		)*32) - math.ceil((bottomWidth) / (bottomWidth+1)) * 32 -- tiles boundaryy
-	print(tilesY/32)
 	tilesMin = 0;
 	tileD = 32;
 	boxWidth = 0;

@@ -8,11 +8,8 @@ function love.load()
 	selectPos = 1
 	selectorX = itmsX - 35;
 	selectorY = selectY;
-
-
-	menuFont = love.graphics.newImageFont("image_font.png"," abcdefghijklmnopqrstuvwxyz" ..
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ0" ..
-    "123456789.,!?-+/():;%&`'*#=[]\"");
+	fontSize = 14 --actually the fontspace too lazy to change everything
+	menuFont = love.graphics.newFont("image_font.ttf", 10)
 end
 
 function love.update()
@@ -24,26 +21,25 @@ function love.update()
 			selectPos = (math.ceil(#selectTb/2) - selectPos)+ 1 
 			selectPos = selectPos % math.ceil(#selectTb/2) +1
 			selectPos = math.ceil(#selectTb/2) - selectPos + 1
-			print(#selectTb)
 		end
 		-- if selectPos % 2 == 0 then
-		-- 	selectorX = itmsX - 14 + string.len(selectTb[selectPos-1])* 14
+		-- 	selectorX = itmsX - fontSize + string.len(selectTb[selectPos-1])* fontSize
 		-- 	selectorY = selectY + (35 * (selectPos-2))
 		-- else
 		-- 	selectorX = itmsX - 35
 		-- 	selectorY = selectY + (35 * (selectPos-1))
 		-- end
-		if ((selectPos-1)*2+1) % 2 == 1 and key == "return" and selectPos ~= math.ceil(#selectTb/2) and selectorX ~= itmsX - 14 + string.len(selectTb[(selectPos-1)*2+1])* 14 then
-			selectorX = itmsX - 14 + string.len(selectTb[(selectPos-1)*2+1])* 14
-			-- if key == "return" and selectorX == itmsX - 14 + string.len(selectTb[(selectPos-1)*2+1])* 14  then
+		if ((selectPos-1)*2+1) % 2 == 1 and key == "return" and selectPos ~= math.ceil(#selectTb/2) and selectorX ~= itmsX - fontSize + string.len(selectTb[(selectPos-1)*2+1])* fontSize then
+			selectorX = itmsX - fontSize + string.len(selectTb[(selectPos-1)*2+1])* fontSize
+			-- if key == "return" and selectorX == itmsX - fontSize + string.len(selectTb[(selectPos-1)*2+1])* fontSize  then
 			-- 	selectorX = itmsX - 35
 			-- end
 			print(math.ceil(#selectTb/2))
-		elseif key == "up" and  selectorX == itmsX - 14 + string.len(selectTb[(selectPos-1)*2+1])* 14 then
+		elseif key == "up" and  selectorX == itmsX - fontSize + string.len(selectTb[(selectPos-1)*2+1])* fontSize then
 			selectTb[(selectPos-1)*2+2] = selectTb[(selectPos-1)*2+2] + 32;
-		elseif  key == "down" and  selectorX == itmsX - 14 + string.len(selectTb[(selectPos-1)*2+1])* 14 and selectTb[(selectPos-1)*2+2] > 0 then
+		elseif  key == "down" and  selectorX == itmsX - fontSize + string.len(selectTb[(selectPos-1)*2+1])* fontSize and selectTb[(selectPos-1)*2+2] > 0 then
 			selectTb[(selectPos-1)*2+2] = selectTb[(selectPos-1)*2+2] - 32;
-		elseif key == "return" and selectorX == itmsX - 14 + string.len(selectTb[(selectPos-1)*2+1])* 14 then
+		elseif key == "return" and selectorX == itmsX - fontSize + string.len(selectTb[(selectPos-1)*2+1])* fontSize then
 			selectorX = itmsX -35
 		end
 	end
@@ -60,16 +56,16 @@ function love.draw()
 
 	for i = 1, #selectTb, 1 do
 		if i % 2 == 0 then 
-			love.graphics.print(selectTb[i], itmsX + string.len(selectTb[i-1])* 14, selectY + (35 * (i-2)));
+			love.graphics.print(selectTb[i], itmsX + string.len(selectTb[i-1])* fontSize, selectY + (35 * (i-2)));
 		else 
 			love.graphics.print(selectTb[i], itmsX, selectY + (35 * (i-1)))
 		end
 	end
 
-	love.graphics.print("O", selectorX, selectorY + ((selectPos-1)* 70))
+	love.graphics.print(">", selectorX, selectorY + ((selectPos-1)* 70))
 
 	-- if selectPos % 2 == 0 then
-	-- 	love.graphics.print("O", itmsX - 14 + string.len(selectTb[selectPos-1])* 14, selectY + (35 * (selectPos-2)))
+	-- 	love.graphics.print("O", itmsX - fontSize + string.len(selectTb[selectPos-1])* fontSize, selectY + (35 * (selectPos-2)))
 
 	-- else
 	-- 	love.graphics.print("O", itmsX - 35, selectY + (35 * (selectPos-1)))

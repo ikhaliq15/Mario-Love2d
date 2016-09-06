@@ -1,26 +1,21 @@
-	require ("../libs/boundary")
-
-tileSet = love.graphics.newImage("spriteBatch.png");
-tilesY = 0
-
-function updateSize()
-	bottomWidth = (((tileSet:getHeight()/32) * tileSet:getWidth()) %love.graphics.getWidth());  
-	tilesX = 0; -- tiles boundaryx 
-	tilesY = (math.floor((love.graphics.getHeight() - (math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32))*32))/32
-		)*32) - math.ceil((bottomWidth) / (bottomWidth+1)) * 32 -- tiles boundaryy
-end
-
-function loadTileEditor()
-
+ function love.load()
+	require "boundary"
+	require "test"
 	love.graphics.setBackgroundColor(255,255,255);
+	tileSet = love.graphics.newImage("spriteBatch.png");
+	layers = { 
+			{"Sky", 25, 19},
+		}
+	love.filesystem.setIdentity("Converter")
+	ogImagePath = love.filesystem.getSourceBaseDirectory().."/resources/tileset.png"
+	saveImagePath = love.filesystem.getSaveDirectory().."/maps/tileset.png"
 	tileQuads = {};
-	bottomWidth = (((tileSet:getHeight()/32) * tileSet:getWidth()) %love.graphics.getWidth());  
 	tilesX = 0; -- tiles boundaryx 
 	tilesY = (math.floor((love.graphics.getHeight() - (math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32))*32))/32
 		)*32) - math.ceil((bottomWidth) / (bottomWidth+1)) * 32 -- tiles boundaryy
-	print(tilesY/32)
 	tilesMin = 0;
 	tileD = 32;
+	bottomWidth = (((tileSet:getHeight()/32) * tileSet:getWidth()) %love.graphics.getWidth()); --how many extra tiles at the bottom 
 	boxWidth = 0;
 	if(tileSet:getWidth()*(tileSet:getHeight()/32) % love.graphics.getWidth() == tileSet:getWidth()) then
 		boxWidth = tileSet:getWidth();
@@ -29,8 +24,13 @@ function loadTileEditor()
 	end
 	boxHeight = math.ceil(((love.graphics.getHeight() - tilesY))/32)*32;
 	tileMap = {};
+	layerMap = {{}};
 	tx = 0;
 	ty = 0;
+
+	print (love.graphics.getHeight()/32)
+	print (love.graphics.getWidth()/32)
+
 
 	for i = 0, math.floor(love.graphics.getHeight()/32), 1 do
 		tileMap[i] = {};
@@ -38,13 +38,39 @@ function loadTileEditor()
 			tileMap[i][j] = 0;
 		end
 	end
-	
+
 	for y = 0, (tileSet:getHeight()/32)-1, 1 do
 		for x = 0, (tileSet:getWidth()/32)-1, 1 do 
 			tileQuads[#tileQuads+1] = love.graphics.newQuad(x * 32, y * 32, 32, 32, tileSet:getWidth(), tileSet:getHeight());
 		end
 	end
+
 	spriteBatch = love.graphics.newSpriteBatch(tileSet, love.graphics.getHeight() * love.graphics.getWidth());
+
+end
+
+function injectLayer(id, tbl, layerTbl, layerNum)
+	for i = 0, #tbl-1, 1 do
+		for j = 0, #tbl[i]-1, 1 do 
+			if tbl[i][j] == id then 
+				layerTbl[layerNum][j + #tbl[i]*(i)] = id
+			elseif tbl[i][j] == nil then
+				print (j)
+			else
+				layerTbl[layerNum][j + #tbl[i]*(i)] = 0
+			end
+		end
+	end 
+end
+
+--need to read the file first you dont need to overlay any layers because when you make a map you never overlay a tile
+function mergeLayers(tbl, layerTbl)
+	for i = 1, #layerTbl, 1 do 
+		for j = 1, #layerTbl[i], 1 do
+			tblp[i][j] = layerTbl[i][j]
+		end
+	end
+
 end
 
 function updateMap() 
@@ -59,11 +85,30 @@ function updateMap()
 	spriteBatch:flush();
 end
 
-function isTileItemColliding()
-	return isTouching(tilesMin, tilesY, boxWidth, boxHeight, bottomWidth);
-end 
+function love.update()
+	isTouching(tilesMin, tilesY, boxWidth, boxHeight, bottomWidth);
+	function love.keyreleased(key) 
+		if key == "return" then
+			-- checkMapsFolder()
 
-function drawTileEditor()
+			injectLayer(2, tileMap, layerMap, 1)
+
+			for i = 0, #layerMap[1], 1 do 
+				if i % 25 == 0 then
+					print("\n")
+				end
+				print (layerMap[1][i])
+			end
+
+			print(#layerMap[1]);
+			newMap("test", layers, layerMap)
+			-- print(love.graphics.getHeight()/32 .. " " .. love.graphics.getWidth()/32)
+
+		end
+	end
+end
+
+function love.draw()
 	love.graphics.setColor(0,0,0);
 	-----MAP GRID
 	for i = 0, math.floor(love.graphics.getHeight()/32), 1 do
@@ -79,10 +124,13 @@ function drawTileEditor()
 	love.graphics.print("isTouching ".. tostring(isTouching(tilesMin, tilesY, boxWidth, boxHeight, bottomWidth)), 32);
 -- math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32))
 	love.graphics.setColor(255,255,255);
+	--MOD THIS SHIT SO IT ISNT ON ONE LAYER, LAYER 17 is where it all goes
 	for y = 0, math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32)), 1 do --clean up with modoulus
-		for i = 1, #tileQuads - y * love.graphics.getWidth()/32, 1 do
-			tilesX = ((i-1)*32);
-			tileMap[(tilesY+y*32)/32][tilesX/32] = i + (y*(love.graphics.getWidth()/32));
+		for i = 1, #tileQuads - y * (love.graphics.getWidth()/32), 1 do
+			if i <= 25 then
+				tilesX = ((i-1)*32);
+				tileMap[(tilesY+y*32)/32][tilesX/32] = i + (y*(love.graphics.getWidth()/32));
+			end
 		end
 	end
 	-- (y*(love.graphics.getWidth()/32));

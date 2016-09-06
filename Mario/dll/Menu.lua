@@ -20,13 +20,10 @@ function updateMenu()
 			state = "play"
 		end
 		if selectPos == 2 then
-			state = "create"
 			love.graphics.setBackgroundColor(255,255,255);
-			if selectPos == 2 then
-				state = "create"
-				success = love.window.setMode(512, 608)
-				loadTileEditor();
-			end
+			state = "create"
+			success = love.window.setMode(25*32, 19*32)
+			loadTileEditor();	
 		end
 	end
 end
