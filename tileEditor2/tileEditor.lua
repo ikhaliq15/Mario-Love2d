@@ -12,34 +12,63 @@ function readMapFile(name, size, layerMap, layerNum)
 	-- end
 end
 
+-- function injectLayer(id, tbl, layerTbl, layerNum)
+-- 	k = 0
+-- 	for i = 1, #tbl + 1, 1 do
+-- 		for j = 1, #tbl[i-1], 1 do 
+
+-- 			if tbl[i-1][j-1] == id then
+-- 				k = k +1
+-- 				layerTbl[layerNum][j + #tbl[i-1]*(i-1)] = k
+-- 				-- print("SKY " .. layerTbl[layerNum][j + #tbl[i-1]*(i-1)])
+-- 			elseif tbl[i-1][j-1] == nil then
+-- 				print ("NILL ".. j .. " " .. i)
+-- 			else
+-- 				k = k +1
+-- 				layerTbl[layerNum][j + #tbl[i-1]*(i-1)] = k
+-- 				-- print("zero " .. layerTbl[layerNum][j + #tbl[i-1]*(i-1)])
+-- 			end
+-- 			-- print(j + #tbl[i-1]*(i-1));
+
+-- 		-- if tbl[i][j] == id then 
+-- 		-- 		layerTbl[layerNum][j + #tbl[i]*(i)] = k
+-- 		-- 	elseif tbl[i][j] == nil then
+-- 		-- 		print (j)
+-- 		-- 	else
+-- 		-- 		k = k +1
+-- 		-- 		-- print(k)
+-- 		-- 		layerTbl[layerNum][j + #tbl[i]*(i)] = k
+-- 		-- 	end
+-- 		end
+-- 	end 
+-- 	for i = 1, #layerTbl[layerNum], 1 do
+-- 		print(layerTbl[layerNum][i])
+-- 	end
+-- end
+
 function injectLayer(id, tbl, layerTbl, layerNum)
 	k = 0
+
+	print ("WIDTH: " .. #tbl + 1)
+	print ("HEIGHT: " .. #tbl[1])
+
 	for i = 1, #tbl + 1, 1 do
-		for j = 1, #tbl[i-1]+1, 1 do 
+		for j = 1, #tbl[i-1], 1 do 
+
 			if tbl[i-1][j-1] == id then
 				k = k +1
 				layerTbl[layerNum][j + #tbl[i-1]*(i-1)] = k
-				print(k)
 			elseif tbl[i-1][j-1] == nil then
 				print ("NILL ".. j .. " " .. i)
 			else
 				k = k +1
 				layerTbl[layerNum][j + #tbl[i-1]*(i-1)] = k
-				print(k)
 			end
-		-- if tbl[i][j] == id then 
-		-- 		layerTbl[layerNum][j + #tbl[i]*(i)] = k
-		-- 	elseif tbl[i][j] == nil then
-		-- 		print (j)
-		-- 	else
-		-- 		k = k +1
-		-- 		-- print(k)
-		-- 		layerTbl[layerNum][j + #tbl[i]*(i)] = k
-		-- 	end
 		end
 	end 
-	 print(tbl[1][25])
-
+	for i = 1, #layerTbl[layerNum], 1 do
+		print(layerTbl[layerNum][i])
+	end
 end
 
 --need to read the file first you dont need to overlay any layers because when you make a map you never overlay a tile
@@ -99,6 +128,7 @@ function loadTileEditor(mapFile)
 			for j = 0, math.floor(love.graphics.getWidth()/32)-1, 1 do
 				tileMap[i][j] = 0;
 				k = k + 1
+				-- print("zero" .. tileMap[i][j] .. k)
 			end
 		end
 		-- for i = 0, 10, 1 do

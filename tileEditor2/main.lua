@@ -59,13 +59,13 @@ function love.update()
 
 				-- checkMapsFolder()
 				k = 0
-				for i = 1, #layerMap[1], 1 do
-					print(layerMap[1][i]) 
+				-- for i = 1, #layerMap[1], 1 do
+				-- 	print(layerMap[1][i]) 
 
-					if i % 25 == 0 then
-						print("\n")
-					end
-				end
+				-- 	if i % 25 == 0 then
+				-- 		print("\n")
+				-- 	end
+				-- end
 			end
 		end
 	end
