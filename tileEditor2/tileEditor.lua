@@ -105,7 +105,7 @@ function loadTileEditor(mapFile)
 	 	for i = 0, math.floor(love.graphics.getHeight()/32)-1, 1 do
 			tileMap[i] = {};
 			for j = 0, math.floor(love.graphics.getWidth()/32)-1, 1 do
-				tileMap[i][j] = layerMap[1][i+1];
+				tileMap[i][j] = layerMap[1][(j+ 1) + math.floor(love.graphics.getWidth()/32) * i];
 				-- tileMap[i][j] = 0;
 				-- print(layerMap[1][j + #tileMap[i]*(i)]);
 			end
