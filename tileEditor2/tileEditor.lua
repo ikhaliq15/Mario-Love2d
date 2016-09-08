@@ -11,39 +11,6 @@ function readMapFile(name, size, layerMap, layerNum)
 	print("MAPSIZE = " .. #layerMap[layerNum])
 end
 
--- function injectLayer(id, tbl, layerTbl, layerNum)
--- 	k = 0
--- 	for i = 1, #tbl + 1, 1 do
--- 		for j = 1, #tbl[i-1], 1 do 
-
--- 			if tbl[i-1][j-1] == id then
--- 				k = k +1
--- 				layerTbl[layerNum][j + #tbl[i-1]*(i-1)] = k
--- 				-- print("SKY " .. layerTbl[layerNum][j + #tbl[i-1]*(i-1)])
--- 			elseif tbl[i-1][j-1] == nil then
--- 				print ("NILL ".. j .. " " .. i)
--- 			else
--- 				k = k +1
--- 				layerTbl[layerNum][j + #tbl[i-1]*(i-1)] = k
--- 				-- print("zero " .. layerTbl[layerNum][j + #tbl[i-1]*(i-1)])
--- 			end
--- 			-- print(j + #tbl[i-1]*(i-1));
-
--- 		-- if tbl[i][j] == id then 
--- 		-- 		layerTbl[layerNum][j + #tbl[i]*(i)] = k
--- 		-- 	elseif tbl[i][j] == nil then
--- 		-- 		print (j)
--- 		-- 	else
--- 		-- 		k = k +1
--- 		-- 		-- print(k)
--- 		-- 		layerTbl[layerNum][j + #tbl[i]*(i)] = k
--- 		-- 	end
--- 		end
--- 	end 
--- 	for i = 1, #layerTbl[layerNum], 1 do
--- 		print(layerTbl[layerNum][i])
--- 	end
--- end
 
 function injectLayer(id, tbl, layerTbl, layerNum)
 
@@ -58,6 +25,7 @@ function injectLayer(id, tbl, layerTbl, layerNum)
 			end
 		end
 	end 
+
 end
 
 --need to read the file first you dont need to overlay any layers because when you make a map you never overlay a tile
@@ -67,7 +35,6 @@ function mergeLayers(tbl, layerTbl)
 			tbl[i][j] = layerTbl[i][j]
 		end
 	end
-
 end
 
 function updateSize()

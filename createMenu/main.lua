@@ -2,14 +2,18 @@ function love.load()
 
 	selector = love.graphics.newImage("SELECTOR.png");
 	logo = love.graphics.newImage("THEINTERWEB.png");
-	itmsX = love.graphics.getWidth()/2 - 85;--menu items's xcord
-	selectY = love.graphics.getHeight()/2 - logo:getHeight() + 45;--selector's y cord
+	backGroundImage = love.graphics.newImage("EDITMENU.png");
 	selectTb = {"WIDTH",0,"BGCOLOR",0,"ENTER"}--goes by 35
+	fontSize = 18 --actually the fontspace too lazy to change everything
+	menuFont = love.graphics.newFont("image_font.ttf", fontSize-4)
+	itmsX = love.graphics.getWidth()/2 - 70;--menu items's xcord
+	selectYCreate = love.graphics.getHeight()/2 - 35 * #selectTb + 35;--selector's y cord
 	selectPos = 1
 	selectorX = itmsX - 35;
-	selectorY = selectY;
-	fontSize = 14 --actually the fontspace too lazy to change everything
-	menuFont = love.graphics.newFont("image_font.ttf", 10)
+	selectorY = selectYCreate;
+
+	love.graphics.setBackgroundColor(120,120,250);
+	gameState = "createMenu"
 end
 
 function love.update()
@@ -53,55 +57,20 @@ function love.draw()
 	-- love.graphics.draw(selector, itmsX - 35, selectY + (35 * (selectPos - 1)));
 
 	love.graphics.setFont(menuFont);
-
-	for i = 1, #selectTb, 1 do
-		if i % 2 == 0 then 
-			love.graphics.print(selectTb[i], itmsX + string.len(selectTb[i-1])* fontSize, selectY + (35 * (i-2)));
-		else 
-			love.graphics.print(selectTb[i], itmsX, selectY + (35 * (i-1)))
+	if gameState == "createMenu" then
+		love.graphics.draw(backGroundImage)
+		for i = 1, #selectTb, 1 do
+			if i % 2 == 0 then 
+				love.graphics.print(selectTb[i], itmsX + string.len(selectTb[i-1])* fontSize, selectYCreate + (35 * (i-2)));
+			else 
+				love.graphics.print(selectTb[i], itmsX, selectYCreate + (35 * (i-1)))
+			end
 		end
+
+		love.graphics.print(">", selectorX, selectorY + ((selectPos-1)* 70))
 	end
 
-	love.graphics.print(">", selectorX, selectorY + ((selectPos-1)* 70))
-
-	-- if selectPos % 2 == 0 then
-	-- 	love.graphics.print("O", itmsX - fontSize + string.len(selectTb[selectPos-1])* fontSize, selectY + (35 * (selectPos-2)))
-
-	-- else
-	-- 	love.graphics.print("O", itmsX - 35, selectY + (35 * (selectPos-1)))
-
-	-- end
 	
 end
--- function love.load( ) 
--- 	love.filesystem.setIdentity("Converter")
--- 	files = love.filesystem.getDirectoryItems("")
--- 	editFiles = {"mapWidth", 0, backGroundColor, 0, "enter"};
--- 	mapWidth = 0;
--- 	selectorX = 0;
 
--- 	-- for k, file in ipairs(files) do
--- 	-- 	if string.sub(file, -3) == "txt" then
--- 	-- 		editFiles[#editFiles + 1] = string.sub(file, 1, -5);
--- 	-- 	end
--- 	-- end
--- 	-- for i = 1, #editFiles, 1 do
--- 	-- 	print ("MAPFILE: " .. editFiles[i])
--- 	-- end
--- end
-
--- function love.update()
-	
-
--- end
-
--- function love.draw( ... )
--- 	love.graphics.setFont(menuFont);
--- 	-- for i = 1, #editFiles, 1 do
--- 	-- 	love.graphics.print("MAPFILE: " .. editFiles[i], 30, 30)
--- 	-- end
--- 	love.graphics.print("WIDTH:  " .. tostring(mapWidth), 30);
--- 	love.graphics.print("o", selectorX);
-	
--- end
 

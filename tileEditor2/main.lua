@@ -3,6 +3,7 @@ require("test")
 function love.load( ) 
 	love.filesystem.setIdentity("Converter")
 	files = love.filesystem.getDirectoryItems("custom_maps")
+	backGroundImage = love.graphics.newImage("editMenu.png")
 	editFiles = {};
 	mapWidth = 0;
 	selectPos = 1
@@ -10,7 +11,7 @@ function love.load( )
 	menuFont = love.graphics.newFont("image_font.ttf", fontSize)
 	fontSize = 14
 	mapFile = ""
-	gameState = "menu"
+	gameState = "editMenu"
 	layers = {	{"Sky", 25, 18}}
 	print(love.graphics.getHeight()/32)
 	print(love.graphics.getWidth()/32)
@@ -45,7 +46,7 @@ function love.update()
 
 	function love.keyreleased(key)
 		if key == "return" then
-			if selectPos == 1 and gameState == "menu" then
+			if selectPos == 1 and #editFiles ~= 0 and gameState == "editMenu" then
 				gameState = "edit"
 				mapFile = editFiles[selectPos] .. ".txt"
 				loadTileEditor(mapFile);
@@ -70,7 +71,12 @@ end
 
 
 function love.draw()
+
 	love.graphics.setFont(menuFont);
+
+	if gameState == "editMenu" then
+		love.graphics.draw(backGroundImage);
+	end
 
 	for i = 1, #editFiles, 1 do
 		love.graphics.print("MAPFILE: " .. editFiles[i], itmsX, selectY)
