@@ -2,22 +2,79 @@ require ("boundary")
 
 tileSet = love.graphics.newImage("spriteBatch.png");
 tilesY = 0
-function readMapFile(name, size, layerMap, layerNum)
-	data = love.filesystem.read( "custom_maps/" .. name, size )
-	for i = 0, math.floor(string.len(data)/2)-1, 1 do
-		layerMap[layerNum][i+1] = tonumber(string.sub(data,i*2 + 1,i*2 + 1))
-		print(tonumber(string.sub(data,i*2 + 1,i*2 + 1)))
-	end
-	print("MAPSIZE = " .. #layerMap[layerNum])
+
+
+function print_r ( t )  
+    local print_r_cache={}
+    local function sub_print_r(t,indent)
+        if (print_r_cache[tostring(t)]) then
+            print(indent.."*"..tostring(t))
+        else
+            print_r_cache[tostring(t)]=true
+            if (type(t)=="table") then
+                for pos,val in pairs(t) do
+                    if (type(val)=="table") then
+                        print(indent.."["..pos.."] => "..tostring(t).." {")
+                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
+                        print(indent..string.rep(" ",string.len(pos)+6).."}")
+                    elseif (type(val)=="string") then
+                        print(indent.."["..pos..'] => "'..val..'"')
+                    else
+                        print(indent.."["..pos.."] => "..tostring(val))
+                    end
+                end
+            else
+                print(indent..tostring(t))
+            end
+        end
+    end
+    if (type(t)=="table") then
+        print(tostring(t).." {")
+        sub_print_r(t,"  ")
+        print("}")
+    else
+        sub_print_r(t,"  ")
+    end
+    print()
 end
 
 
-function injectLayer(id, tbl, layerTbl, layerNum)
+function readMapFile(name, size, layerMap, layerNum)
+	data = love.filesystem.read( "custom_maps/" .. name, size )
+	-- for i = 0, math.floor(string.len(data)/2)-1, 1 do
+	-- 	layerMap[layerNum][i+1] = tonumber(string.sub(data,i*2 + 1,i*2 + 1))
+	-- 	print(tonumber(string.sub(data,i*2 + 1,i*2 + 1)))
+	-- end
+	t = data:split(",")
+	for i = 1, #t, 1 do
+		layerMap[layerNum][i] = tonumber(t[i])
+	end
+
+	print("MAPSIZE = " .. #layerMap[layerNum])
+end
+
+function string:split(sep)
+        local sep, fields = sep or ":", {}
+        local pattern = string.format("([^%s]+)", sep)
+        self:gsub(pattern, function(c) fields[#fields+1] = c end)
+        return fields
+end
+
+function contains(t, k)
+	for i = 1, #t, 1 do
+		if t[i] == k then
+			return {true, k}
+		end
+	end
+	return {false, -1}
+end
+
+function injectLayer(ids, tbl, layerTbl, layerNum)
 
 	for i = 1, #tbl+1, 1 do
 		for j = 1, #tbl[i-1]+1, 1 do -- minus i and 1 to set back to zero while not getting out of bounds error
-			if tbl[i-1][j-1] == id then
-				layerTbl[layerNum] [j + (#tbl[i-1]+1) * (i-1)] = id
+			if contains(ids, tbl[i-1][j-1])[1] then
+				layerTbl[layerNum] [j + (#tbl[i-1]+1) * (i-1)] = contains(ids, tbl[i-1][j-1])[2]
 			elseif tbl[i-1][j-1] == nil then
 				print ("NILL ".. j .. " " .. i)
 			else

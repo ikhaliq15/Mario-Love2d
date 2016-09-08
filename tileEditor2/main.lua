@@ -53,7 +53,7 @@ function love.update()
 
 			end	
 			if gameState == "edit" then
-			injectLayer(2, tileMap, layerMap, 1)
+			injectLayer({2, 3, 28}, tileMap, layerMap, 1)
 			newMap("test", layers, getMap())
 
 				-- checkMapsFolder()
