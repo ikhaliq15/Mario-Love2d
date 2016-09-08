@@ -53,12 +53,9 @@ function love.update()
 			end	
 			if gameState == "edit" then
 			injectLayer(2, tileMap, layerMap, 1)
-
-
-			 newMap("test", layers, getMap())
+			newMap("test", layers, getMap())
 
 				-- checkMapsFolder()
-				k = 0
 				-- for i = 1, #layerMap[1], 1 do
 				-- 	print(layerMap[1][i]) 
 

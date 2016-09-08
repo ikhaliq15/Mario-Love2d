@@ -3,13 +3,12 @@ require ("boundary")
 tileSet = love.graphics.newImage("spriteBatch.png");
 tilesY = 0
 function readMapFile(name, size, layerMap, layerNum)
-	-- data = love.filesystem.read( "custom_maps/" .. name, size )
-	-- print(string.sub(data, 2,2))
-
-	-- for i = 0, math.floor(string.len(data)/2), 1 do
-	-- 	layerMap[layerNum][i] = tonumber(string.sub(data,i*2 + 1,i*2 + 1))
-	-- 	print(tonumber(string.sub(data,i*2 + 1,i*2 + 1)))
-	-- end
+	data = love.filesystem.read( "custom_maps/" .. name, size )
+	for i = 0, math.floor(string.len(data)/2)-1, 1 do
+		layerMap[layerNum][i+1] = tonumber(string.sub(data,i*2 + 1,i*2 + 1))
+		print(tonumber(string.sub(data,i*2 + 1,i*2 + 1)))
+	end
+	print("MAPSIZE = " .. #layerMap[layerNum])
 end
 
 -- function injectLayer(id, tbl, layerTbl, layerNum)
@@ -47,28 +46,18 @@ end
 -- end
 
 function injectLayer(id, tbl, layerTbl, layerNum)
-	k = 0
 
-	print ("WIDTH: " .. #tbl + 1)
-	print ("HEIGHT: " .. #tbl[1])
-
-	for i = 1, #tbl + 1, 1 do
-		for j = 1, #tbl[i-1], 1 do 
-
+	for i = 1, #tbl+1, 1 do
+		for j = 1, #tbl[i-1]+1, 1 do -- minus i and 1 to set back to zero while not getting out of bounds error
 			if tbl[i-1][j-1] == id then
-				k = k +1
-				layerTbl[layerNum][j + #tbl[i-1]*(i-1)] = k
+				layerTbl[layerNum] [j + (#tbl[i-1]+1) * (i-1)] = id
 			elseif tbl[i-1][j-1] == nil then
 				print ("NILL ".. j .. " " .. i)
 			else
-				k = k +1
-				layerTbl[layerNum][j + #tbl[i-1]*(i-1)] = k
+				layerTbl[layerNum] [j + (#tbl[i-1]+1) * (i-1)] = 0
 			end
 		end
 	end 
-	for i = 1, #layerTbl[layerNum], 1 do
-		print(layerTbl[layerNum][i])
-	end
 end
 
 --need to read the file first you dont need to overlay any layers because when you make a map you never overlay a tile
@@ -111,30 +100,25 @@ function loadTileEditor(mapFile)
 	ty = 0;
 	-- putting if outside for effeciency, every frame counts!
 	data = love.filesystem.read( "custom_maps/" .. mapFile, love.filesystem.getSize(mapFile), layerMap, 1)
-	-- if  data ~= "" then
-	-- 	readMapFile(mapFile, love.filesystem.getSize(mapFile), layerMap, 1)
-	--  	for i = 0, math.floor(love.graphics.getHeight()/32), 1 do
-	-- 		tileMap[i] = {};
-	-- 		for j = 0, math.floor(love.graphics.getWidth()/32), 1 do
-	-- 			tileMap[i][j] = layerMap[1][j + #tileMap[i]*(i)];
-	-- 			-- print(layerMap[1][j + #tileMap[i]*(i)]);
-	-- 		end
-	-- 	end
-	-- else
-	k = 0
-
+	if  data ~= "" then
+		readMapFile(mapFile, love.filesystem.getSize(mapFile), layerMap, 1)
+	 	for i = 0, math.floor(love.graphics.getHeight()/32)-1, 1 do
+			tileMap[i] = {};
+			for j = 0, math.floor(love.graphics.getWidth()/32)-1, 1 do
+				tileMap[i][j] = layerMap[1][i+1];
+				-- tileMap[i][j] = 0;
+				-- print(layerMap[1][j + #tileMap[i]*(i)]);
+			end
+		end
+	else
 		for i = 0, math.floor(love.graphics.getHeight()/32)-1, 1 do
 			tileMap[i] = {};
 			for j = 0, math.floor(love.graphics.getWidth()/32)-1, 1 do
 				tileMap[i][j] = 0;
-				k = k + 1
 				-- print("zero" .. tileMap[i][j] .. k)
 			end
 		end
-		-- for i = 0, 10, 1 do
-		-- 	print(i)
-		-- end
-	-- end
+	end
 	
 	for y = 0, (tileSet:getHeight()/32)-1, 1 do
 		for x = 0, (tileSet:getWidth()/32)-1, 1 do 
