@@ -5,16 +5,17 @@ function love.load( )
 	files = love.filesystem.getDirectoryItems("custom_maps")
 	backGroundImage = love.graphics.newImage("editMenu.png")
 	editFiles = {};
-	mapWidth = 0;
+	mapWidth = (love.graphics.getWidth()*2)/32
 	selectPos = 1
 	itmsX = love.graphics.getWidth()/2 - 85;--menu items's xcord
 	menuFont = love.graphics.newFont("image_font.ttf", fontSize)
 	fontSize = 14
+	timer = 0
 	mapFile = ""
 	gameState = "editMenu"
-	layers = {	{"Sky", 25, 18}}
-	print(love.graphics.getHeight()/32)
-	print(love.graphics.getWidth()/32)
+	layers = {{"mix", love.graphics.getWidth()/32 , love.graphics.getHeight()/32,{2}},{"dirt", love.graphics.getWidth()/32 , love.graphics.getHeight()/32,{3,2}}}
+	print("Map Height " .. love.graphics.getHeight()/32)
+	print("Map Width " .. love.graphics.getWidth()/32)
 	for k, file in ipairs(files) do
 		if string.sub(file, -3) == "txt" then
 			editFiles[#editFiles + 1] = string.sub(file, 1, -5);
@@ -39,23 +40,39 @@ function love.load( )
 
 end
 
-function love.update()
-	if love.keyboard.isDown("return") then
-
-	end
+function love.update(dt)
 
 	function love.keyreleased(key)
 		if key == "return" then
 			if selectPos == 1 and #editFiles ~= 0 and gameState == "editMenu" then
 				gameState = "edit"
 				mapFile = editFiles[selectPos] .. ".txt"
-				loadTileEditor(mapFile);
-
+				loadTileEditor(mapFile, mapWidth);
 			end	
 			if gameState == "edit" then
-			injectLayer({2, 3, 28}, tileMap, layerMap, 1)
-			newMap("test", layers, getMap())
+				print("tileQuads " ..  math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32)))
+				if dt > 0.05 then
+					dt = 0.05
+				end
+				-- injectLayer(2, tileMap, layerMap, 1)
+				for i = 1 , #layers, 1 do
+					injectLayer(layers[i][4], tileMap, layerMap, i)
+					print("Layer " .. i .. " length " .. #layerMap[i])
+					-- print(#layers[i][4])
+					-- for j = 1, #layers[i][4], 1 do 
+					-- 	print("Layer num of types " .. i .. " " .. layers[1][4][j])
+					-- end
+				end
 
+				t = getLayerMap()
+				newMap("test", layers, t)
+				-- for i = 1, #t, 1 do
+				-- 	for j = 1, #t[i], 1 do
+				-- 		if t[i][j] ~= 0 then 
+				-- 			print("LAYER " .. i .. " " .. t[i][j])
+				-- 		end
+				-- 	end
+				-- end
 				-- checkMapsFolder()
 				-- for i = 1, #layerMap[1], 1 do
 				-- 	print(layerMap[1][i]) 
@@ -67,6 +84,26 @@ function love.update()
 			end
 		end
 	end
+
+	if gameState == "edit" then
+		if dt > 0.05 then
+			dt = 0.05
+		end
+		timer = timer + math.floor((love.timer.getDelta() * love.timer.getFPS()) * 100) / 10000
+
+		if love.keyboard.isDown("right") and getCameraX() < mapWidth-1 then
+			if timer > .05 then
+				addCameraX(1)
+				timer = 0
+			end
+		elseif love.keyboard.isDown("left") and getCameraX()+1 > math.floor(love.graphics.getWidth()/32) then
+			if timer > .05 then
+				subCameraX(1)
+				timer = 0
+			end
+		end
+	end
+
 end
 
 

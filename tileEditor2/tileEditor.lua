@@ -2,96 +2,71 @@ require ("boundary")
 
 tileSet = love.graphics.newImage("spriteBatch.png");
 tilesY = 0
+CameraX = math.floor(love.graphics.getWidth()/32)-1
 
-
-function print_r ( t )  
-    local print_r_cache={}
-    local function sub_print_r(t,indent)
-        if (print_r_cache[tostring(t)]) then
-            print(indent.."*"..tostring(t))
-        else
-            print_r_cache[tostring(t)]=true
-            if (type(t)=="table") then
-                for pos,val in pairs(t) do
-                    if (type(val)=="table") then
-                        print(indent.."["..pos.."] => "..tostring(t).." {")
-                        sub_print_r(val,indent..string.rep(" ",string.len(pos)+8))
-                        print(indent..string.rep(" ",string.len(pos)+6).."}")
-                    elseif (type(val)=="string") then
-                        print(indent.."["..pos..'] => "'..val..'"')
-                    else
-                        print(indent.."["..pos.."] => "..tostring(val))
-                    end
-                end
-            else
-                print(indent..tostring(t))
-            end
-        end
-    end
-    if (type(t)=="table") then
-        print(tostring(t).." {")
-        sub_print_r(t,"  ")
-        print("}")
-    else
-        sub_print_r(t,"  ")
-    end
-    print()
-end
-
-
+--make past 2 digits
 function readMapFile(name, size, layerMap, layerNum)
+	layerNums = getLayerMap()
 	data = love.filesystem.read( "custom_maps/" .. name, size )
-	-- for i = 0, math.floor(string.len(data)/2)-1, 1 do
-	-- 	layerMap[layerNum][i+1] = tonumber(string.sub(data,i*2 + 1,i*2 + 1))
-	-- 	print(tonumber(string.sub(data,i*2 + 1,i*2 + 1)))
-	-- end
-	t = data:split(",")
-	for i = 1, #t, 1 do
-		layerMap[layerNum][i] = tonumber(t[i])
+	for i = 0, math.floor(string.len(data)/2)-1, 1 do
+		for j = 1, #layerNums, 1 do
+			layerMap[j][i+1] = tonumber(string.sub(data,i*2 + 1,i*2 + 1))
+		end
+		-- print(layerMap[layerNum][i+1])
 	end
-
-	print("MAPSIZE = " .. #layerMap[layerNum])
+	for j = 1, #layerNums, 1 do
+		print("MAPSIZE : " .. #layerMap[j])
+	end
 end
 
-function string:split(sep)
-        local sep, fields = sep or ":", {}
-        local pattern = string.format("([^%s]+)", sep)
-        self:gsub(pattern, function(c) fields[#fields+1] = c end)
-        return fields
-end
-
-function contains(t, k)
-	for i = 1, #t, 1 do
-		if t[i] == k then
-			return {true, k}
+function contains(value,ids)
+	for k = 1, #ids, 1 do
+		if value == ids[k] then
+			return value;
 		end
 	end
-	return {false, -1}
+	return 0
 end
 
 function injectLayer(ids, tbl, layerTbl, layerNum)
-
 	for i = 1, #tbl+1, 1 do
 		for j = 1, #tbl[i-1]+1, 1 do -- minus i and 1 to set back to zero while not getting out of bounds error
-			if contains(ids, tbl[i-1][j-1])[1] then
-				layerTbl[layerNum] [j + (#tbl[i-1]+1) * (i-1)] = contains(ids, tbl[i-1][j-1])[2]
-			elseif tbl[i-1][j-1] == nil then
-				print ("NILL ".. j .. " " .. i)
-			else
-				layerTbl[layerNum] [j + (#tbl[i-1]+1) * (i-1)] = 0
-			end
+			-- if tbl[i-1][j-1] == id then
+			-- 	layerTbl[layerNum] [j + (#tbl[i-1]+1) * (i-1)] = ids
+			-- elseif tbl[i-1][j-1] == nil then
+			-- 	print ("NILL ".. j .. " " .. i)
+			-- else
+			-- 	layerTbl[layerNum] [j + (#tbl[i-1]+1) * (i-1)] = 0
+			-- end
+			-- layerTbl[1] [j + (#tbl[i-1]+1) * (i-1)] = 0;
+			-- for k = 1, #ids, 1 do
+				layerTbl[layerNum] [j + (#tbl[i-1]+1) * (i-1)] = contains(tbl[i-1][j-1], ids);
+			-- end
+
 		end
 	end 
-
 end
 
 --need to read the file first you dont need to overlay any layers because when you make a map you never overlay a tile
+
 function mergeLayers(tbl, layerTbl)
 	for i = 1, #layerTbl, 1 do 
 		for j = 1, #layerTbl[i], 1 do
 			tbl[i][j] = layerTbl[i][j]
 		end
 	end
+end
+
+function addCameraX( a )
+	CameraX = CameraX + a
+end
+
+function subCameraX( s )
+	CameraX = CameraX -	s;
+end
+
+function getCameraX( )
+	return CameraX
 end
 
 function updateSize()
@@ -101,11 +76,14 @@ function updateSize()
 		)*32) - math.ceil((bottomWidth) / (bottomWidth+1)) * 32 -- tiles boundaryy
 end
 
-function loadTileEditor(mapFile)
+function loadTileEditor(mapFile, mapWidth)
 
 	love.graphics.setBackgroundColor(255,255,255);
 	tileQuads = {};
-	layerMap = {{}};
+	layerMap = {};
+	for i = 1, #layers, 1 do
+		layerMap[i] = {}
+	end
 	bottomWidth = (((tileSet:getHeight()/32) * tileSet:getWidth()) %love.graphics.getWidth());  
 	tilesX = 0; -- tiles boundaryx 
 	tilesY = (math.floor((love.graphics.getHeight() - (math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32))*32))/32
@@ -123,13 +101,16 @@ function loadTileEditor(mapFile)
 	tx = 0;
 	ty = 0;
 	-- putting if outside for effeciency, every frame counts!
-	data = love.filesystem.read( "custom_maps/" .. mapFile, love.filesystem.getSize(mapFile), layerMap, 1)
-	if  data ~= "" then
-		readMapFile(mapFile, love.filesystem.getSize(mapFile), layerMap, 1)
+	data = love.filesystem.read( "custom_maps/" .. "test.txt", love.filesystem.getSize(mapFile), layerMap, 1)
+	k = 0
+	if  data ~= "" and data ~= nil then
+		print("DATA READ")
+		readMapFile(mapFile, love.filesystem.getSize("custom_maps/" .. "test.txt"), layerMap, 1)
 	 	for i = 0, math.floor(love.graphics.getHeight()/32)-1, 1 do
 			tileMap[i] = {};
-			for j = 0, math.floor(love.graphics.getWidth()/32)-1, 1 do
-				tileMap[i][j] = layerMap[1][(j+ 1) + math.floor(love.graphics.getWidth()/32) * i];
+			for j = 0, mapWidth-1, 1 do
+				tileMap[i][j] = layerMap[1][(j+1) + (mapWidth) * i];
+				k = k+1
 				-- tileMap[i][j] = 0;
 				-- print(layerMap[1][j + #tileMap[i]*(i)]);
 			end
@@ -137,7 +118,7 @@ function loadTileEditor(mapFile)
 	else
 		for i = 0, math.floor(love.graphics.getHeight()/32)-1, 1 do
 			tileMap[i] = {};
-			for j = 0, math.floor(love.graphics.getWidth()/32)-1, 1 do
+			for j = 0, mapWidth-1, 1 do
 				tileMap[i][j] = 0;
 				-- print("zero" .. tileMap[i][j] .. k)
 			end
@@ -152,17 +133,18 @@ function loadTileEditor(mapFile)
 	spriteBatch = love.graphics.newSpriteBatch(tileSet, love.graphics.getHeight() * love.graphics.getWidth());
 end
 
-function getMap( )
+function getLayerMap()
+
 	return layerMap;
 
 end
 
-function updateMap() 
+function updateMap(camX) 
 	spriteBatch:clear();
-	for i = 0, #tileMap, 1 do 
-		for j = 0, #tileMap[i] do 
-			if tileMap[i][j] ~= 0 then
-				spriteBatch:add(tileQuads[tileMap[i][j]],j*32,i*32);
+	for i = 0, math.floor(love.graphics.getHeight()/32)-1, 1 do 
+		for j = 0, math.floor(love.graphics.getWidth()/32)-1, 1 do 
+			if tileMap[i][j+(camX - (math.floor(love.graphics.getWidth()/32)-1))] ~= 0 then
+				spriteBatch:add(tileQuads[tileMap[i][j+(camX - (math.floor(love.graphics.getWidth()/32)-1))]],j*32,i*32);
 			end
 		end
 	end
@@ -188,19 +170,22 @@ function drawTileEditor()
 	-- love.graphics.print("mousex: " .. tostring(love.mouse.getX()/32), 0, love.graphics.getHeight() - 20);
 	love.graphics.print("mousey: " .. tostring(love.mouse.getY()/32), 200);
 	love.graphics.print("isTouching ".. tostring(isTouching(tilesMin, tilesY, boxWidth, boxHeight, bottomWidth)), 32);
--- math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32))
-	love.graphics.setColor(255,255,255);
-	for y = 0, math.floor(((tileSet:getWidth()*tileSet:getHeight())/(32*32))/(love.graphics.getWidth()/32)), 1 do --clean up with modoulus
-		for i = 1, #tileQuads - y * love.graphics.getWidth()/32, 1 do
-			if i <= 25 then
-				tilesX = ((i-1)*32);
-				tileMap[(tilesY+y*32)/32][tilesX/32] = i + (y*(love.graphics.getWidth()/32));
-			end
-		end
-	end
 
-	-- (y*(love.graphics.getWidth()/32));
-	updateMap()
+	love.graphics.setColor(255,255,255);
+
+	for i = 0, (love.graphics.getWidth() - bottomWidth)/32 -1, 1 do
+		if tileMap[love.graphics.getHeight()/32 - 1][bottomWidth/32 + i +(getCameraX() - (math.floor(love.graphics.getWidth()/32)-1))] ~= 0 then
+			tileMap[love.graphics.getHeight()/32 - 1][bottomWidth/32 + i +(getCameraX() - (math.floor(love.graphics.getWidth()/32)-1))] = 0
+		end
+	end 
+
+	for i = 1, #tileQuads, 1 do
+		tilesX = (i-1) % (love.graphics.getWidth()/32);
+		y = math.floor((i-1)/(love.graphics.getWidth()/32)) 
+		-- print(i + (y*(love.graphics.getWidth()/32)))
+		tileMap[tilesY/32 + y][tilesX+(getCameraX() - (math.floor(love.graphics.getWidth()/32)-1))] = i 
+	end
+	updateMap(getCameraX())
 	love.graphics.draw(spriteBatch);
-	isGrabbing(tilesMin, tilesY, boxWidth, boxHeight,tileD, tileQuads, tileSet,tileMap);
+	isGrabbing(tilesMin, tilesY,(getCameraX() - (math.floor(love.graphics.getWidth()/32)-1)), boxWidth, boxHeight,tileD, tileQuads, tileSet,tileMap);
 end
