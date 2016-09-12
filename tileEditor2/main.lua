@@ -1,5 +1,5 @@
 require ("tileEditor")
-require("test")
+require("converter")
 function love.load( ) 
 	love.filesystem.setIdentity("Converter")
 	files = love.filesystem.getDirectoryItems("custom_maps")

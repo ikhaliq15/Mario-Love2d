@@ -74,7 +74,6 @@ function newMap(n, l, d)
 		end
 		currentStr = currentStr .. "</data></layer>"
 		parts[#parts + 1] = currentStr
-		print("data" .. #l)
 	end
 
 	parts[#parts + 1] = "</map>"
@@ -83,23 +82,9 @@ function newMap(n, l, d)
 	for i = 1, #parts, 1 do
 		finalString = finalString .. parts[i] .. "\n"
 	end
+
 -- txt file
-	-- for i = 1, 1, 1 do
-	-- 	currentStr2 = ""
-	-- 	for j = 1, #d[i], 1 do
-	-- 		currentStr2 = currentStr2 .. tostring(d[i][j])
-	-- 		if not (j == #d[i]) then
-	-- 			currentStr2 = currentStr2 .. ","
-	-- 		end
-	-- 	end
-	-- 	parts2[#parts2 + 1] = currentStr2
-	-- end
 
-	-- finalString2 = ""
-
-	-- for i = 1, #parts2, 1 do
-	-- 	finalString2 = finalString2 .. parts2[i] .. "\n"
-	-- end
 	for i = 1, #d[1], 1 do 
 		parts2[i] = 0
 	end

@@ -5,15 +5,24 @@ tilesY = 0
 CameraX = math.floor(love.graphics.getWidth()/32)-1
 
 --make past 2 digits
+
+function string:split(sep)
+        local sep, fields = sep or ":", {}
+        local pattern = string.format("([^%s]+)", sep)
+        self:gsub(pattern, function(c) fields[#fields+1] = c end)
+        return fields
+end
+
 function readMapFile(name, size, layerMap, layerNum)
 	layerNums = getLayerMap()
-	data = love.filesystem.read( "custom_maps/" .. name, size )
-	for i = 0, math.floor(string.len(data)/2)-1, 1 do
+	
+	t = data:split(",")
+	for i = 1, #t, 1 do
 		for j = 1, #layerNums, 1 do
-			layerMap[j][i+1] = tonumber(string.sub(data,i*2 + 1,i*2 + 1))
+			layerMap[j][i] = tonumber(t[i])
 		end
-		-- print(layerMap[layerNum][i+1])
 	end
+
 	for j = 1, #layerNums, 1 do
 		print("MAPSIZE : " .. #layerMap[j])
 	end
